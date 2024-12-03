@@ -1,2 +1,2 @@
 # CMSA
-The full code will be made public after the manuscript is accepted. 
+The complete code will be made publicly available after the manuscript is accepted.
