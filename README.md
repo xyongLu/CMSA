@@ -10,7 +10,7 @@ The code will be released after the manuscript is published.
 - CMSA employs a novel cascaded attention mechanism to facilitate multi-scale feature integration, replacing the downsampling operations that often result in substantial information loss in low-resolution contexts.
 - Experimental results demonstrate that this method boosts performance in practical applications such as human pose estimation, head pose estimation, and more with low-resolution images.
 
-## Architecture
+# Architecture
 <p align="center">
   <img src="files/cmsa.png" width=90%> <br>
 </p>
@@ -18,3 +18,15 @@ The code will be released after the manuscript is published.
 <!-- <p align="center">
   <img src="files/cmsa.png" width=90%> <br>
 </p> -->
+
+# Citation
+If our code or models help your work, please cite SBCFormer (WACV2024):
+
+```BibTeX
+@article{lu2024cascaded,
+  title={Cascaded Multi-Scale Attention for Enhanced Multi-Scale Feature Extraction and Interaction with Low-Resolution Images},
+  author={Lu, Xiangyong and Suganuma, Masanori and Okatani, Takayuki},
+  journal={arXiv preprint arXiv:2412.02197},
+  year={2024}
+}
+```
