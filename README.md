@@ -20,7 +20,7 @@ The code will be released after the manuscript is published.
 </p> -->
 
 # Citation
-If our code or models help your work, please cite SBCFormer (WACV2024):
+If our code or models help your work, please cite CMSA:
 
 ```BibTeX
 @article{lu2024cascaded,
