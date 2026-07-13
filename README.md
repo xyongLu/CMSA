@@ -48,6 +48,36 @@ All variants use a 3-stage pyramid; stage 1 uses up to `n = 3` head groups with 
 
 ---
 
+## Installation
+
+We build on the [HRNet](https://github.com/leoxiaobin/deep-high-resolution-net.pytorch) experimental framework. Tested with Python 3.8, PyTorch ≥ 1.10, and CUDA 11.x.
+
+```bash
+# 1. Clone
+git clone git@github.com:xyongLu/CMSA.git
+cd CMSA
+
+# 2. Create environment
+conda create -n cmsa python=3.8 -y
+conda activate cmsa
+
+# 3. Install PyTorch (match your CUDA version) and dependencies
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+pip install -r requirements.txt
+```
+
+Each task is self-contained in its own directory:
+
+```
+CMSA/
+├── Human Pose Estimation/   # COCO 2017, HRNet-style framework
+└── Head Pose Estimation/    # 300W-LP → BIWI / AFLW2000
+```
+
+> **Note:** the training/evaluation commands below follow the HRNet convention (`tools/train.py --cfg experiments/....yaml`). Adjust the config paths and script names to match the released code.
+
+---
+
 ## Human Pose Estimation
 
 Bottom-up human pose estimation on **COCO 2017**, following the HRNet experimental framework. Models predict 17 keypoints from cropped, resized person images; we vary the resize target to control input resolution. Accuracy is measured by Average Precision (AP) based on object keypoint similarity (OKS).
@@ -77,7 +107,43 @@ CMSA outperforms state-of-the-art methods **across all resolutions with far fewe
   <em>AP vs. parameters on COCO 2017 (32 × 24 input). CMSA dominates the accuracy–parameter trade-off.</em>
 </p>
 
-See [`Human Pose Estimation/`](Human%20Pose%20Estimation/) for code and instructions.
+### Data Preparation
+
+Download [COCO 2017](https://cocodataset.org/#download) and the person detection results, then arrange them as:
+
+```
+Human Pose Estimation/data/coco/
+├── annotations/          # person_keypoints_train2017.json, person_keypoints_val2017.json
+├── person_detection_results/
+├── train2017/
+└── val2017/
+```
+
+### Training
+
+Train from scratch (210 epochs, AdamW, MSE loss). Pick the config for the variant and input resolution:
+
+```bash
+cd "Human Pose Estimation"
+
+# CMSA-L, 32 × 24 inputs
+python tools/train.py \
+  --cfg experiments/coco/cmsa/cmsa_l_32x24.yaml
+
+# CMSA-B, 128 × 96 inputs
+python tools/train.py \
+  --cfg experiments/coco/cmsa/cmsa_b_128x96.yaml
+```
+
+### Evaluation
+
+```bash
+python tools/test.py \
+  --cfg experiments/coco/cmsa/cmsa_l_32x24.yaml \
+  TEST.MODEL_FILE models/cmsa_l_32x24.pth
+```
+
+See [`Human Pose Estimation/`](Human%20Pose%20Estimation/) for the full config list.
 
 ---
 
@@ -101,7 +167,48 @@ At low resolutions (64 × 64 and 32 × 32), CMSA reaches **state-of-the-art MAE 
 | 32 × 32 | **CMSA-B**   | **5.4**    | 4.55      | 4.51          |
 | 32 × 32 | **CMSA-L**   | **7.1**    | 4.48      | **4.46**      |
 
-See [`Head Pose Estimation/`](Head%20Pose%20Estimation/) for code and instructions.
+### Data Preparation
+
+Download [300W-LP](http://www.cbsr.ia.ac.cn/users/xiangyuzhu/projects/3DDFA/main.htm) (train), [BIWI](https://data.vision.ee.ethz.ch/cvl/gfanelli/head_pose/head_forest.html), and [AFLW2000](http://www.cbsr.ia.ac.cn/users/xiangyuzhu/projects/3DDFA/main.htm) (test), then arrange them as:
+
+```
+Head Pose Estimation/data/
+├── 300W_LP/
+├── BIWI/
+└── AFLW2000/
+```
+
+Following prior work, discard the 31 AFLW2000 images with angles outside `[-99°, 99°]`.
+
+### Training
+
+Train from scratch (100 epochs, AdamW, cosine schedule) with binned classification + soft stage-wise regression:
+
+```bash
+cd "Head Pose Estimation"
+
+# CMSA-L, 32 × 32 inputs
+python tools/train.py \
+  --cfg experiments/300wlp/cmsa/cmsa_l_32x32.yaml
+```
+
+### Evaluation
+
+```bash
+# Test on AFLW2000
+python tools/test.py \
+  --cfg experiments/300wlp/cmsa/cmsa_l_32x32.yaml \
+  --dataset AFLW2000 \
+  TEST.MODEL_FILE models/cmsa_l_32x32.pth
+
+# Test on BIWI
+python tools/test.py \
+  --cfg experiments/300wlp/cmsa/cmsa_l_32x32.yaml \
+  --dataset BIWI \
+  TEST.MODEL_FILE models/cmsa_l_32x32.pth
+```
+
+See [`Head Pose Estimation/`](Head%20Pose%20Estimation/) for the full config list.
 
 ---
 
