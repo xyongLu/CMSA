@@ -4,7 +4,7 @@
 
 Xiangyong Lu, Masanori Suganuma, Takayuki Okatani
 
-> Accepted (with minor revision) by **IEEE Transactions on Multimedia (IEEE TMM), 2026**. Code is being released.
+> Accepted (with minor revision) by **IEEE Transactions on Multimedia (IEEE TMM), 2026**. Code is being released. 
 
 ---
 
@@ -22,11 +22,6 @@ That recipe works well for high-resolution inputs—a `256×192` map can descend
 
 Here lies a point that is easy to misread, which the paper is careful to clarify: **CMSA does not remove the cross-stage downsampling pyramid.** Cross-stage spatial integration is fundamental to CNN–ViT hybrids and remains effective at any resolution. CMSA addresses a *different* level of the problem—**how to produce multi-scale features within each stage.** Conventionally, even the within-stage multi-scale relies on downsampling (or the equivalent token merging), which is precisely the most fragile link under low resolution. CMSA's insight is to decouple "within-stage multi-scale" from downsampling altogether.
 
-<p align="center">
-  <img src="files/multiscale_within_stage_motivation_v4.png" width="80%"> <br>
-  <em>Within a stage, conventional designs build multi-scale features by downsampling / token merging (fragile at low resolution),
-  whereas CMSA forms multiple scales at full spatial resolution.</em>
-</p>
 
 ### How CMSA works
 
@@ -41,7 +36,7 @@ The result is effective multi-scale feature extraction and cross-scale interacti
 ## Architecture
 
 <p align="center">
-  <img src="files/cmsa.png" width="90%"> <br>
+  <img src="files/CMSA_figure2.png" width="90%"> <br>
   <em>(a) Overall hierarchical architecture. (b) CMSA block. (c) Cascaded Multi-Scale Attention.</em>
 </p>
 
