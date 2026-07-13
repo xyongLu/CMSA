@@ -10,9 +10,27 @@ Xiangyong Lu, Masanori Suganuma, Takayuki Okatani
 
 ## Introduction
 
-In real-world settings—surveillance cameras, distant subjects, or low-performance edge devices—objects are often captured at **low resolution**. This makes it hard to extract and combine the **multi-scale features** that tasks such as human pose estimation rely on. The conventional recipe of building multi-scale features by **downsampling** feature maps quickly destroys detail when the input is already small.
+Most computer-vision benchmarks quietly assume the input is a sharp, well-resolved image. The real world is rarely so cooperative: a distant pedestrian in a surveillance feed, the limited compute of an edge device, a video stream compressed for transmission—in many settings the target reaching the model is only a few dozen pixels tall. When a person occupies just `32×24` pixels, virtually every pose-estimation network designed for high resolution loses accuracy sharply.
 
-**CMSA (Cascaded Multi-Scale Attention)** is a new attention mechanism for CNN–ViT hybrid architectures that extracts and integrates features across scales **without downsampling the input or feature maps**. It combines:
+This work targets exactly that **low-resolution** regime and introduces a new attention mechanism—**Cascaded Multi-Scale Attention (CMSA)**. Its core claim fits in one sentence: **extract and interact multi-scale features entirely *within a single processing stage*, without any downsampling.**
+
+### The overlooked problem: multi-scale *inside* a stage
+
+Multi-scale features are almost mandatory for tasks like pose estimation—the torso needs a large receptive field for global context, while keypoints such as wrists and ankles depend on fine local detail. Mainstream approaches (HRNet, HRFormer, and various CNN–ViT hybrids) obtain multi-scale features in a strikingly uniform way: **repeatedly downsample the feature map to build a pyramid of decreasing resolutions.**
+
+That recipe works well for high-resolution inputs—a `256×192` map can descend through `128×96 → 64×48 → 32×24` and still keep enough spatial resolution at every level. But when the **input itself is only `32×24`**, the problem surfaces immediately: further downsampling gives `16×12`, then `8×6`, and spatial information runs dry—each additional step means a catastrophic loss of detail.
+
+Here lies a point that is easy to misread, which the paper is careful to clarify: **CMSA does not remove the cross-stage downsampling pyramid.** Cross-stage spatial integration is fundamental to CNN–ViT hybrids and remains effective at any resolution. CMSA addresses a *different* level of the problem—**how to produce multi-scale features within each stage.** Conventionally, even the within-stage multi-scale relies on downsampling (or the equivalent token merging), which is precisely the most fragile link under low resolution. CMSA's insight is to decouple "within-stage multi-scale" from downsampling altogether.
+
+<p align="center">
+  <img src="files/multiscale_within_stage_motivation_v4.png" width="80%"> <br>
+  <em>Within a stage, conventional designs build multi-scale features by downsampling / token merging (fragile at low resolution),
+  whereas CMSA forms multiple scales at full spatial resolution.</em>
+</p>
+
+### How CMSA works
+
+CMSA is an attention mechanism for CNN–ViT hybrids that extracts and integrates features across scales **without downsampling the input or feature maps**. It combines:
 
 - **Grouped multi-head self-attention** — attention heads are split into groups, each processing a different scale.
 - **Window-based local attention** (à la Swin) — each group uses a different window size `sₖ × tₖ` to form a distinct receptive field, from global (window = full map) to local.
