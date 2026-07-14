@@ -4,7 +4,7 @@
 
 Xiangyong Lu, Masanori Suganuma, Takayuki Okatani
 
-> Accepted (with minor revision) by **IEEE Transactions on Multimedia (IEEE TMM), 2026**. Code is being released. 
+> Accept with minor revision by **IEEE Transactions on Multimedia (IEEE TMM), 2026**. Code is being released. 
 
 ---
 
