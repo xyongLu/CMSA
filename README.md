@@ -2,8 +2,6 @@
 
 **[Cascaded Multi-Scale Attention for Enhanced Multi-Scale Feature Extraction and Interaction with Low-Resolution Images](https://arxiv.org/abs/2412.02197)**
 
-Xiangyong Lu, Masanori Suganuma, Takayuki Okatani
-
 > Accept by **IEEE Transactions on Multimedia (IEEE TMM), 2026**. Code is being released. 
 
 ---
