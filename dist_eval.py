@@ -230,10 +230,7 @@ def main(args):
             prob=args.mixup_prob, switch_prob=args.mixup_switch_prob, mode=args.mixup_mode,
             label_smoothing=args.smoothing, num_classes=cfg.MODEL.NUM_JOINTS)
         
-    if args.model=='pose_hrnet' :
-        model = eval(cfg.MODEL.NAME+'.get_pose_net')(cfg, is_train=True)
-    else: 
-        model = create_model(
+    model = create_model(
         args.model,
         pretrained=False,
         num_classes= cfg.MODEL.NUM_JOINTS,

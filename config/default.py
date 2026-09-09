@@ -34,7 +34,7 @@ _C.CUDNN.ENABLED = True
 
 # common params for NETWORK
 _C.MODEL = CN()
-_C.MODEL.NAME = 'pose_hrnet'
+_C.MODEL.NAME = 'CMSAFormer_L_32'
 _C.MODEL.INIT_WEIGHTS = True
 _C.MODEL.PRETRAINED = ''
 _C.MODEL.NUM_JOINTS = 17
