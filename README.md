@@ -209,12 +209,6 @@ At low resolutions (64 × 64 and 32 × 32), CMSA reaches **state-of-the-art MAE 
 
 Low-resolution inputs are produced by resizing crops to the target size (e.g. 32 × 24 for pose, 32 × 32 for head pose)—**no super-resolution preprocessing is used**. In the paper, applying SR (SwinIR) before pose estimation actually *hurts* accuracy, since it improves visual reconstruction but not the spatial cues needed for keypoint localization.
 
-## Key Takeaways
-
-- **Fewer parameters, higher accuracy** — CMSA-L uses ~7 M parameters vs. 28–87 M for typical baselines, yet leads at every resolution tested.
-- **Robust to low resolution** — the advantage grows as input resolution shrinks, exactly the regime targeted.
-- **No downsampling for multi-scale** — multi-scale features and their interactions are built at full resolution inside each stage.
-
 ## Citation
 
 ```bibtex

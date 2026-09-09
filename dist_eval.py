@@ -22,7 +22,6 @@ from config import cfg
 from config import update_config
 from samplers import RASampler
 from mixup import Mixup
-from models import *
 
 from models import cmasformer 
 import utils
@@ -137,31 +136,8 @@ def get_args():
     args = parser.parse_args()
     return args
 
-def show_viz_loss(args, epoch, loss, vis, plot_data):
-    #Visdom Visualization
-    if (epoch % 2 == 0) and (vis != None) and (plot_data != None):
-        plot_data['X'].append(epoch)
-        plot_data['Y'].append(
-            round(loss,4)
-        )
-        vis.line(
-            #X=np.stack([np.array(plot_data['X'])] * len(plot_data['legend']), 1),
-            X=np.array(plot_data['X']),
-            Y=np.array(plot_data['Y']),
-            opts={
-                'title': 'MAE over times',
-                'legend': plot_data['legend'],
-                'xlabel': 'Iterations:' + str(epoch),
-                'ylabel': 'MAE',
-                'width': 1200,
-                'height': 390,
-            },
-        win = 'MAE evaluated on the {}'.format(args.dataset_test) 
-        )
-
 def main(args):
     utils.init_distributed_mode(args)
-
     update_config(cfg, args)
 
     # fix the seed for reproducibility
