@@ -2,7 +2,8 @@
 
 **[Cascaded Multi-Scale Attention for Enhanced Multi-Scale Feature Extraction and Interaction with Low-Resolution Images](https://arxiv.org/abs/2412.02197)**
 
-> Accept by **IEEE Transactions on Multimedia (IEEE TMM), 2026**. Code is being released. 
+> Accepted by **IEEE Transactions on Multimedia (IEEE TMM), 2026**.
+> This repository contains the official PyTorch implementation for **human pose estimation on COCO 2017**. Code for the other tasks in the paper (head pose estimation, small-image classification, semantic segmentation) is being prepared for release.
 
 ---
 
@@ -17,6 +18,11 @@ This work targets exactly that **low-resolution** regime and introduces a new at
 Multi-scale features are almost mandatory for tasks like pose estimation—the torso needs a large receptive field for global context, while keypoints such as wrists and ankles depend on fine local detail. Mainstream approaches (HRNet, HRFormer, and various CNN–ViT hybrids) obtain multi-scale features in a strikingly uniform way: **repeatedly downsample the feature map to build a pyramid of decreasing resolutions.**
 
 That recipe works well for high-resolution inputs—a `256×192` map can descend through `128×96 → 64×48 → 32×24` and still keep enough spatial resolution at every level. But when the **input itself is only `32×24`**, the problem surfaces immediately: further downsampling gives `16×12`, then `8×6`, and spatial information runs dry—each additional step means a catastrophic loss of detail.
+
+<p align="center">
+  <img src="files/cmsa_motivation.svg" width="95%"> <br>
+  <em>The motivation at a glance. The conventional downsampling pyramid works at high resolution (left) but exhausts spatial information when the input itself is tiny (middle). CMSA builds multi-scale features within the stage—via grouped heads with different window sizes and cascaded fusion—while keeping the feature map at full resolution (right).</em>
+</p>
 
 Here lies a point that is easy to misread, which the paper is careful to clarify: **CMSA does not remove the cross-stage downsampling pyramid.** Cross-stage spatial integration is fundamental to CNN–ViT hybrids and remains effective at any resolution. CMSA addresses a *different* level of the problem—**how to produce multi-scale features within each stage.** Conventionally, even the within-stage multi-scale relies on downsampling (or the equivalent token merging), which is precisely the most fragile link under low resolution. CMSA's insight is to decouple "within-stage multi-scale" from downsampling altogether.
 
@@ -47,21 +53,23 @@ The result is effective multi-scale feature extraction and cross-scale interacti
 
 ### Model Variants
 
-Three variants trade off accuracy against size (see paper, Table I):
+Three variants trade off accuracy against size (see paper, Table I). They are implemented in [models/cmasformer.py](models/cmasformer.py):
 
-| Variant   | Params | Notes                          |
-|-----------|:------:|--------------------------------|
-| CMSA-S    | ~4.0–4.2 M | Smallest, fastest             |
-| CMSA-B    | ~5.4–5.7 M | Balanced                      |
-| CMSA-L    | ~7.1–7.4 M | Best accuracy, still lightweight |
+| Variant | Model name (`--model`) | Params | Notes |
+|---------|------------------------|:------:|-------|
+| CMSA-S  | `CMSAFormer_S_32` | ~4.0–4.2 M | Smallest, fastest |
+| CMSA-B  | `CMSAFormer_B_32` | ~5.4–5.7 M | Balanced |
+| CMSA-L  | `CMSAFormer_L_32` | ~7.1–7.4 M | Best accuracy, still lightweight |
 
-All variants use a 3-stage pyramid; stage 1 uses up to `n = 3` head groups with window sizes `{32×24, 16×12, 8×6}`, and later stages use `n = 2` groups with progressively smaller windows.
+All variants use a 3-stage pyramid; stage 1 uses up to `n = 3` head groups with window sizes `{32×24, 16×12, 8×6}`, and later stages use `n = 2` groups with progressively smaller windows. Structural re-parameterization (3×3 depth-wise conv + point-wise conv + BN branches, merged at inference) is used to balance accuracy and efficiency.
 
 ---
 
-## Installation
+## Getting Started
 
-We build on the [HRNet](https://github.com/leoxiaobin/deep-high-resolution-net.pytorch) experimental framework. Tested with Python 3.8, PyTorch ≥ 1.10, and CUDA 11.x.
+### Installation
+
+Tested with Python 3.8, PyTorch ≥ 1.10, and CUDA 11.x.
 
 ```bash
 # 1. Clone
@@ -72,26 +80,74 @@ cd CMSA
 conda create -n cmsa python=3.8 -y
 conda activate cmsa
 
-# 3. Install PyTorch (match your CUDA version) and dependencies
+# 3. Install PyTorch (match your CUDA version)
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-pip install -r requirements.txt
+
+# 4. Install the remaining dependencies
+pip install timm yacs json-tricks munkres opencv-python pycocotools scipy ptflops Cython
 ```
 
-Each task is self-contained in its own directory:
+### Repository structure
 
 ```
 CMSA/
-├── Human Pose Estimation/   # COCO 2017, HRNet-style framework
-└── Head Pose Estimation/    # 300W-LP → BIWI / AFLW2000
+├── config/                   # default configuration (yacs) — config/default.py
+├── experiments/coco/vits/    # experiment configs: cmsa_s_32.yaml / cmsa_b_32.yaml / cmsa_l_32.yaml
+├── lib/                      # datasets, heatmap heads, NMS, evaluation utilities
+├── models/                   # CMSAFormer (cmasformer.py) and reference backbones
+├── files/                    # figures used in this README
+├── dist_train.py             # training entry point
+├── dist_eval.py              # evaluation entry point
+├── engine.py                 # train / eval loops
+└── losses.py, mixup.py, samplers.py, transforms.py, utils.py
 ```
 
-> **Note:** the training/evaluation commands below follow the HRNet convention (`tools/train.py --cfg experiments/....yaml`). Adjust the config paths and script names to match the released code.
+### Data Preparation
+
+Download [COCO 2017](https://cocodataset.org/#download) (train/val images and person keypoint annotations). By default the configs expect the dataset at `../../Data/coco2017` relative to the repository (see `DATASET.ROOT` in the yaml files—edit it to point at your own location):
+
+```
+Data/coco2017/
+├── annotations/          # person_keypoints_train2017.json, person_keypoints_val2017.json
+├── train2017/
+└── val2017/
+```
+
+### Training
+
+Train from scratch. Pick the model/config pair for the variant you want (the released configs target `32×24` inputs):
+
+```bash
+# Single GPU — CMSA-L, 32 × 24 inputs
+python dist_train.py \
+  --model CMSAFormer_L_32 \
+  --cfg experiments/coco/vits/cmsa_l_32.yaml \
+  --batch-size 48
+
+# Multi-GPU (e.g. 2 GPUs)
+torchrun --nproc_per_node=2 dist_train.py \
+  --model CMSAFormer_L_32 \
+  --cfg experiments/coco/vits/cmsa_l_32.yaml
+```
+
+Checkpoints and logs are written to `outputs/` and `logs/` (see `OUTPUT_DIR` / `LOG_DIR` in the config).
+
+### Evaluation
+
+```bash
+python dist_eval.py \
+  --model CMSAFormer_L_32 \
+  --cfg experiments/coco/vits/cmsa_l_32.yaml \
+  --resume path/to/checkpoint.pth
+```
 
 ---
 
-## Human Pose Estimation
+## Results
 
-Bottom-up human pose estimation on **COCO 2017**, following the HRNet experimental framework. Models predict 17 keypoints from cropped, resized person images; we vary the resize target to control input resolution. Accuracy is measured by Average Precision (AP) based on object keypoint similarity (OKS).
+### Human Pose Estimation (COCO 2017)
+
+Bottom-up human pose estimation on **COCO 2017**, predicting 17 keypoints from cropped, resized person images; the resize target controls input resolution. Accuracy is measured by Average Precision (AP) based on object keypoint similarity (OKS).
 
 CMSA outperforms state-of-the-art methods **across all resolutions with far fewer parameters**, and the margin widens as resolution drops.
 
@@ -113,52 +169,16 @@ CMSA outperforms state-of-the-art methods **across all resolutions with far fewe
 | 32 × 24   | **CMSA-B** | **5.6**    | 0.9       | 53.5    |
 | 32 × 24   | **CMSA-L** | **7.3**    | 1.1       | **56.4** |
 
+CMSA is fast as well as accurate: on a single RTX 3090, CMSA-L runs at ~987 FPS with `32×24` inputs (vs. ~194 FPS for ViTPose-B).
+
 <p align="center">
   <img src="files/CMSA_figure4.png" width="60%"> <br>
   <em>AP vs. parameters on COCO 2017 (32 × 24 input). CMSA dominates the accuracy–parameter trade-off.</em>
 </p>
 
-### Data Preparation
+### Head Pose Estimation
 
-Download [COCO 2017](https://cocodataset.org/#download) and the person detection results, then arrange them as:
-
-```
-Human Pose Estimation/data/coco/
-├── annotations/          # person_keypoints_train2017.json, person_keypoints_val2017.json
-├── person_detection_results/
-├── train2017/
-└── val2017/
-```
-
-### Training
-
-Train from scratch (210 epochs, AdamW, MSE loss). Pick the config for the variant and input resolution:
-
-```bash
-cd "Human Pose Estimation"
-
-# CMSA-L, 32 × 24 inputs
-python tools/train.py \
-  --cfg experiments/coco/cmsa/cmsa_l_32x24.yaml
-
-# CMSA-B, 128 × 96 inputs
-python tools/train.py \
-  --cfg experiments/coco/cmsa/cmsa_b_128x96.yaml
-```
-
-### Evaluation
-
-```bash
-python tools/test.py \
-  --cfg experiments/coco/cmsa/cmsa_l_32x24.yaml \
-  TEST.MODEL_FILE models/cmsa_l_32x24.pth
-```
-
-See [`Human Pose Estimation/`](Human%20Pose%20Estimation/) for the full config list.
-
----
-
-## Head Pose Estimation
+> Code for this task will be released later; the results below are from the paper (Table III).
 
 Landmark-free head pose estimation: predict **yaw, pitch, roll** directly from a cropped face image. Models are trained on **300W-LP** and evaluated on **BIWI** and **AFLW2000**, using binned classification with soft stage-wise regression. Accuracy is reported as **Mean Absolute Error (MAE, lower is better)**.
 
@@ -177,49 +197,6 @@ At low resolutions (64 × 64 and 32 × 32), CMSA reaches **state-of-the-art MAE 
 | 32 × 32 | **CMSA-S**   | **4.0**    | 4.33      | 4.59          |
 | 32 × 32 | **CMSA-B**   | **5.4**    | 4.55      | 4.51          |
 | 32 × 32 | **CMSA-L**   | **7.1**    | 4.48      | **4.46**      |
-
-### Data Preparation
-
-Download [300W-LP](http://www.cbsr.ia.ac.cn/users/xiangyuzhu/projects/3DDFA/main.htm) (train), [BIWI](https://data.vision.ee.ethz.ch/cvl/gfanelli/head_pose/head_forest.html), and [AFLW2000](http://www.cbsr.ia.ac.cn/users/xiangyuzhu/projects/3DDFA/main.htm) (test), then arrange them as:
-
-```
-Head Pose Estimation/data/
-├── 300W_LP/
-├── BIWI/
-└── AFLW2000/
-```
-
-Following prior work, discard the 31 AFLW2000 images with angles outside `[-99°, 99°]`.
-
-### Training
-
-Train from scratch (100 epochs, AdamW, cosine schedule) with binned classification + soft stage-wise regression:
-
-```bash
-cd "Head Pose Estimation"
-
-# CMSA-L, 32 × 32 inputs
-python tools/train.py \
-  --cfg experiments/300wlp/cmsa/cmsa_l_32x32.yaml
-```
-
-### Evaluation
-
-```bash
-# Test on AFLW2000
-python tools/test.py \
-  --cfg experiments/300wlp/cmsa/cmsa_l_32x32.yaml \
-  --dataset AFLW2000 \
-  TEST.MODEL_FILE models/cmsa_l_32x32.pth
-
-# Test on BIWI
-python tools/test.py \
-  --cfg experiments/300wlp/cmsa/cmsa_l_32x32.yaml \
-  --dataset BIWI \
-  TEST.MODEL_FILE models/cmsa_l_32x32.pth
-```
-
-See [`Head Pose Estimation/`](Head%20Pose%20Estimation/) for the full config list.
 
 ---
 

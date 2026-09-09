@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1080" viewBox="0 0 1620 1080" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect width="1620" height="1080" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="810" y="48" text-anchor="middle" font-size="26" font-weight="700" fill="#1f2937">This work: how to obtain multi-scale features within a single stage</text>
+  <text x="810" y="80" text-anchor="middle" font-size="16" fill="#6b7280">Multi-scale feature processing inside one stage — not the cross-stage pyramid (cross-stage downsampling is retained and remains effective)</text>
+
+  <!-- Column separators -->
+  <line x1="540" y1="110" x2="540" y2="660" stroke="#d1d5db" stroke-dasharray="6 6"/>
+  <line x1="1080" y1="110" x2="1080" y2="660" stroke="#d1d5db" stroke-dasharray="6 6"/>
+
+  <!-- ================= Column 1: conventional, high resolution ================= -->
+  <text x="270" y="134" text-anchor="middle" font-size="19" font-weight="700" fill="#3d6fa8">Conventional · high resolution</text>
+  <text x="270" y="160" text-anchor="middle" font-size="14" fill="#6b7280">multi-scale via downsampling · works</text>
+
+  <rect x="120" y="182" width="300" height="80" rx="12" fill="#3d6fa8"/>
+  <text x="270" y="216" text-anchor="middle" font-size="19" font-weight="700" fill="#ffffff">256 × 192</text>
+  <text x="270" y="244" text-anchor="middle" font-size="13" fill="#dbe6f2">in-stage feature map</text>
+
+  <text x="270" y="288" text-anchor="middle" font-size="14" fill="#6b7280">↓ downsample to coarser scales</text>
+
+  <rect x="150" y="302" width="240" height="56" rx="10" fill="#4a7cb5"/>
+  <text x="270" y="336" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">128 × 96</text>
+
+  <text x="270" y="382" text-anchor="middle" font-size="16" fill="#6b7280">↓</text>
+
+  <rect x="180" y="394" width="180" height="52" rx="10" fill="#5d8cc2"/>
+  <text x="270" y="426" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">64 × 48</text>
+
+  <text x="270" y="470" text-anchor="middle" font-size="16" fill="#6b7280">↓</text>
+
+  <rect x="210" y="482" width="120" height="44" rx="9" fill="#7ba3cf"/>
+  <text x="270" y="510" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">32 × 24</text>
+
+  <text x="270" y="584" text-anchor="middle" font-size="18" font-weight="700" fill="#2e7d32">Sufficient multi-scale ✓</text>
+  <text x="270" y="614" text-anchor="middle" font-size="14" fill="#6b7280">plenty of room for repeated downsampling,</text>
+  <text x="270" y="636" text-anchor="middle" font-size="14" fill="#6b7280">yielding rich multi-scale features</text>
+
+  <!-- ================= Column 2: conventional, low resolution ================= -->
+  <text x="810" y="134" text-anchor="middle" font-size="19" font-weight="700" fill="#c14848">Conventional · low resolution</text>
+  <text x="810" y="160" text-anchor="middle" font-size="14" fill="#6b7280">the input itself is tiny · breaks down</text>
+
+  <rect x="740" y="182" width="140" height="50" rx="10" fill="#c14848"/>
+  <text x="810" y="214" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">32 × 24</text>
+
+  <text x="810" y="260" text-anchor="middle" font-size="14" fill="#6b7280">↓ downsample</text>
+
+  <rect x="755" y="276" width="110" height="44" rx="9" fill="#cd5f5f"/>
+  <text x="810" y="304" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">16 × 12</text>
+
+  <text x="810" y="344" text-anchor="middle" font-size="16" fill="#6b7280">↓</text>
+
+  <rect x="770" y="356" width="80" height="38" rx="8" fill="#d97878"/>
+  <text x="810" y="381" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">8 × 6</text>
+
+  <text x="810" y="416" text-anchor="middle" font-size="16" fill="#6b7280">↓</text>
+
+  <rect x="788" y="428" width="44" height="22" rx="6" fill="#e39a9a"/>
+  <text x="810" y="474" text-anchor="middle" font-size="14" fill="#6b7280">4 × 3 …</text>
+
+  <text x="810" y="584" text-anchor="middle" font-size="18" font-weight="700" fill="#c62828">Multi-scale exhausted ✗</text>
+  <text x="810" y="614" text-anchor="middle" font-size="14" fill="#6b7280">almost no room left to downsample —</text>
+  <text x="810" y="636" text-anchor="middle" font-size="14" fill="#6b7280">spatial information vanishes rapidly</text>
+
+  <!-- ================= Column 3: CMSA, low resolution ================= -->
+  <text x="1350" y="134" text-anchor="middle" font-size="19" font-weight="700" fill="#38754a">CMSA (ours) · low resolution</text>
+  <text x="1350" y="160" text-anchor="middle" font-size="14" fill="#6b7280">multi-scale within the stage · no downsampling</text>
+
+  <rect x="1250" y="182" width="200" height="50" rx="10" fill="#4d9160"/>
+  <text x="1350" y="214" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">32 × 24 input</text>
+
+  <text x="1350" y="262" text-anchor="middle" font-size="14" fill="#6b7280">split heads into groups + distinct window sizes</text>
+
+  <rect x="1130" y="280" width="132" height="80" rx="10" fill="#4d9160"/>
+  <text x="1196" y="313" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">G1 · global</text>
+  <text x="1196" y="340" text-anchor="middle" font-size="13" fill="#e2f0e6">win 32 × 24</text>
+
+  <polygon points="1266,312 1266,328 1281,320" fill="#c62828"/>
+
+  <rect x="1284" y="280" width="132" height="80" rx="10" fill="#5d9e6e"/>
+  <text x="1350" y="313" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">G2 · mid</text>
+  <text x="1350" y="340" text-anchor="middle" font-size="13" fill="#e2f0e6">win 16 × 12</text>
+
+  <polygon points="1420,312 1420,328 1435,320" fill="#c62828"/>
+
+  <rect x="1438" y="280" width="132" height="80" rx="10" fill="#74ab82"/>
+  <text x="1504" y="313" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">G3 · fine</text>
+  <text x="1504" y="340" text-anchor="middle" font-size="13" fill="#e2f0e6">win 8 × 6</text>
+
+  <text x="1350" y="398" text-anchor="middle" font-size="14" fill="#6b7280">cascaded cross-scale fusion →</text>
+
+  <rect x="1200" y="416" width="300" height="52" rx="10" fill="#3f7d50"/>
+  <text x="1350" y="448" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">multi-scale features · still 32 × 24</text>
+
+  <text x="1350" y="584" text-anchor="middle" font-size="18" font-weight="700" fill="#2e7d32">Multi-scale preserved ✓</text>
+  <text x="1350" y="614" text-anchor="middle" font-size="14" fill="#6b7280">the feature map stays 32 × 24 throughout —</text>
+  <text x="1350" y="636" text-anchor="middle" font-size="14" fill="#6b7280">scale diversity comes from window size</text>
+
+  <!-- ================= Bottom callout ================= -->
+  <rect x="40" y="690" width="1540" height="350" rx="16" fill="#f6f8f3" stroke="#d8ddd0"/>
+  <text x="90" y="742" font-size="20" font-weight="700" fill="#1f2937">The core problem, and where this work comes in</text>
+
+  <text x="90" y="790" font-size="15" fill="#374151">• The key issue is not the cross-stage pyramid (cross-stage downsampling is retained and remains effective) — it is</text>
+  <text x="104" y="816" font-size="15" font-weight="700" fill="#374151">how multi-scale features are produced inside each stage.</text>
+
+  <text x="90" y="862" font-size="15" fill="#374151">• Conventional in-stage multi-scale relies on downsampling: fine at high resolution, but when the input itself is</text>
+  <text x="104" y="888" font-size="15" fill="#374151">32 × 24 there is almost nothing left to downsample, and multi-scale extraction immediately breaks down.</text>
+
+  <text x="90" y="934" font-size="15" fill="#374151">• CMSA instead splits the attention heads within a stage into groups with <tspan font-weight="700" fill="#2e7d32">different window sizes (32×24 / 16×12 / 8×6)</tspan></text>
+  <text x="104" y="960" font-size="15" fill="#374151">and fuses them in a cascade. The feature map <tspan font-weight="700" fill="#2e7d32">stays at 32 × 24 with no downsampling</tspan> — scale diversity comes purely from</text>
+  <text x="104" y="986" font-size="15" fill="#374151">window size, preserving spatial detail on low-resolution inputs.</text>
+</svg>
