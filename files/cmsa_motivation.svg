@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1080" viewBox="0 0 1620 1080" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
-  <rect width="1620" height="1080" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1160" viewBox="0 0 1620 1160" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect width="1620" height="1160" fill="#ffffff"/>
 
   <!-- Title -->
   <text x="810" y="48" text-anchor="middle" font-size="32" font-weight="700" fill="#1f2937">This work: how to obtain multi-scale features within a single stage</text>
@@ -97,16 +97,18 @@
   <text x="1350" y="636" text-anchor="middle" font-size="16" fill="#6b7280">scale diversity comes from window size</text>
 
   <!-- ================= Bottom callout ================= -->
-  <rect x="40" y="690" width="1540" height="350" rx="16" fill="#f6f8f3" stroke="#d8ddd0"/>
-  <text x="90" y="742" font-size="24" font-weight="700" fill="#1f2937">The core problem, and where this work comes in</text>
+  <rect x="40" y="690" width="1540" height="450" rx="16" fill="#f6f8f3" stroke="#d8ddd0"/>
+  <text x="90" y="746" font-size="24" font-weight="700" fill="#1f2937">The core problem, and where this work comes in</text>
 
-  <text x="90" y="792" font-size="18" fill="#374151">• The key issue is not the cross-stage pyramid (cross-stage downsampling is retained and remains effective) — it is</text>
-  <text x="104" y="822" font-size="18" font-weight="700" fill="#374151">how multi-scale features are produced inside each stage.</text>
+  <text x="90" y="800" font-size="24" fill="#374151">• The key issue is not the cross-stage pyramid (cross-stage downsampling is retained and remains</text>
+  <text x="104" y="836" font-size="24" fill="#374151">effective) — it is <tspan font-weight="700">how multi-scale features are produced inside each stage.</tspan></text>
 
-  <text x="90" y="866" font-size="18" fill="#374151">• Conventional in-stage multi-scale relies on downsampling: fine at high resolution, but when the input itself is</text>
-  <text x="104" y="896" font-size="18" fill="#374151">32 × 24 there is almost nothing left to downsample, and multi-scale extraction immediately breaks down.</text>
+  <text x="90" y="886" font-size="24" fill="#374151">• Conventional in-stage multi-scale relies on downsampling: fine at high resolution, but when the</text>
+  <text x="104" y="922" font-size="24" fill="#374151">input itself is 32 × 24 there is almost nothing left to downsample, and multi-scale extraction</text>
+  <text x="104" y="958" font-size="24" fill="#374151">immediately breaks down.</text>
 
-  <text x="90" y="940" font-size="18" fill="#374151">• CMSA instead splits the attention heads within a stage into groups with <tspan font-weight="700" fill="#2e7d32">different window sizes (32×24 / 16×12 / 8×6)</tspan></text>
-  <text x="104" y="970" font-size="18" fill="#374151">and fuses them in a cascade. The feature map <tspan font-weight="700" fill="#2e7d32">stays at 32 × 24 with no downsampling</tspan> — scale diversity comes purely from</text>
-  <text x="104" y="1000" font-size="18" fill="#374151">window size, preserving spatial detail on low-resolution inputs.</text>
+  <text x="90" y="1008" font-size="24" fill="#374151">• CMSA instead splits the attention heads within a stage into groups with <tspan font-weight="700" fill="#2e7d32">different window</tspan></text>
+  <text x="104" y="1044" font-size="24" fill="#374151"><tspan font-weight="700" fill="#2e7d32">sizes (32×24 / 16×12 / 8×6)</tspan> and fuses them in a cascade. The feature map <tspan font-weight="700" fill="#2e7d32">stays at 32 × 24 with</tspan></text>
+  <text x="104" y="1080" font-size="24" fill="#374151"><tspan font-weight="700" fill="#2e7d32">no downsampling</tspan> — scale diversity comes purely from window size, preserving spatial detail</text>
+  <text x="104" y="1116" font-size="24" fill="#374151">on low-resolution inputs.</text>
 </svg>
