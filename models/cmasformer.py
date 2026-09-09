@@ -569,7 +569,7 @@ class Stem(nn.Module):
 class CMSAFormer(nn.Module):
     """CMSAFormer
     """
-    def __init__(self, img_size=224, in_chans=3, num_classes=1000, embed_dims=[128,320,512], key_dim=32, stage_num_heads=[[2],[4],[8]], stage_wss_resos=[[64,48],[32,24],[16,12]], stage_wss_ratios=[[2],[2],[2]], attn_ratios=[2, 2, 2], mlp_ratio=4, 
+    def __init__(self, img_size=32, in_chans=3, num_classes=1000, embed_dims=[128, 256, 320], key_dim=32, stage_num_heads=[[2],[4],[8]], stage_wss_resos=[[64,48],[32,24],[16,12]], stage_wss_ratios=[[2],[2],[2]], attn_ratios=[2, 2, 2], mlp_ratio=4, 
                 drop_rate=0., attn_drop_rate=0.0, drop_path_rate=0.0, depths_blocks=[2, 3, 2], inference_mode=False):
         super().__init__()
         self.num_classes = num_classes
@@ -642,10 +642,10 @@ def CMSAFormer_S_32(pretrained=False, inference_mode=False, **kwargs):
     model = CMSAFormer(
         embed_dims=[96, 160, 224], 
         key_dim=16, 
-        depths_blocks=[2, 4, 3],  #num_heads [4, 6, 8], 
+        depths_blocks=[2, 4, 3], 
         stage_num_heads = [[2,2,1], [3, 3], [4, 4]],
-        stage_wss_resos = [[(32,24), (16,12), (8,6)],[(16,12), (8,6)], [(8,6), (8,6)]],# [[16, 8], [16, 8], [8, 8]]#[[16, 8], [16, 8], [8, 8]]#in32x32
-        stage_wss_ratios = [[2, 2, 1],[ 2, 2], [1, 2]], #[[ 2, 1], [2, 1], [1, 1]]# [[ 2, 2], [2, 2], [1, 2]]#in32x32
+        stage_wss_resos = [[(32,24), (16,12), (8,6)],[(16,12), (8,6)], [(8,6), (8,6)]],
+        stage_wss_ratios = [[2, 2, 1],[ 2, 2], [1, 2]], 
         attn_ratios=[2, 2, 2], mlp_ratio=4, inference_mode=inference_mode, **kwargs)
 
     return model
@@ -655,10 +655,10 @@ def CMSAFormer_B_32(pretrained=False, inference_mode=False, **kwargs):
     model = CMSAFormer(
         embed_dims=[128, 192, 256], 
         key_dim=16, 
-        depths_blocks=[2, 4, 3],  #num_heads [3, 7, 9], 
-        stage_num_heads = [[1,2,1], [3, 4], [4, 5]],
+        depths_blocks=[2, 4, 3], 
+        stage_num_heads = [[1,2,1], [3, 3], [4, 5]],
         stage_wss_resos = [[(32,24),(16, 12), (8, 6)],[(16,12), (8,6)], [(8,6), (8,6)]],
-        stage_wss_ratios = [[2, 2, 1],[2, 2], [1, 2]], #[[ 2, 1], [2, 1], [1, 1]]# [[ 2, 2], [2, 2], [1, 2]]#in32x32
+        stage_wss_ratios = [[2, 2, 1],[2, 2], [1, 2]], 
         attn_ratios=[2, 2, 2], mlp_ratio=4, inference_mode=inference_mode, **kwargs)
 
     return model
@@ -668,7 +668,7 @@ def CMSAFormer_L_32(pretrained=False, inference_mode=False, **kwargs):
     model = CMSAFormer(
         embed_dims=[128, 256, 320], 
         key_dim=16, 
-        depths_blocks=[2, 4, 3],  #num_heads [3, 6, 8], 
+        depths_blocks=[2, 4, 3], 
         stage_num_heads = [[1,2,1], [3, 3], [4, 4]],
         stage_wss_resos = [[ (32,24),(16, 12), (8, 6)],[(16,12), (8,6)], [(8,6), (8,6)]],
         stage_wss_ratios = [[2, 2, 1],[2, 2], [1, 2]], 
