@@ -35,7 +35,7 @@ def get_args():
     parser = argparse.ArgumentParser(
         description='Head pose estimation using the Hopenet network.')
     parser.add_argument('--uni-note', default='', type=str, help='unique note on the  name of model to train')
-    parser.add_argument('--model', type=str,      default='CMSAFormer_L_32_3g')
+    parser.add_argument('--model', type=str,      default='CMSAFormer_L_32')
     parser.add_argument('--cfg',
                         default='experiments/coco/vits/cmsa_l_32.yaml',
                         help='experiment configure file name',
