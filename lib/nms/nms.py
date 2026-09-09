@@ -10,8 +10,8 @@ from __future__ import print_function
 
 import numpy as np
 
-from .cpu_nms import cpu_nms
-from .gpu_nms import gpu_nms
+from ...CMSAHumanPose.lib.nms.cpu_nms import cpu_nms
+from ...CMSAHumanPose.lib.nms.gpu_nms import gpu_nms
 
 
 def py_nms_wrapper(thresh):

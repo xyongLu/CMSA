@@ -26,7 +26,7 @@ Here lies a point that is easy to misread, which the paper is careful to clarify
 CMSA is an attention mechanism for CNN–ViT hybrids that extracts and integrates features across scales **without downsampling the input or feature maps**. It combines:
 
 - **Grouped multi-head self-attention** — attention heads are split into groups, each processing a different scale.
-- **Window-based local attention** (à la Swin) — each group uses a different window size `sₖ × tₖ` to form a distinct receptive field, from global (window = full map) to local.
+- **Window-based local attention** (Swin) — each group uses a different window size `sₖ × tₖ` to form a distinct receptive field, from global (window = full map) to local.
 - **Cascaded multi-scale fusion** — features flow from lower to higher scales; each group's output updates the key/value of the next group via **channel fusion (CF)** and **spatial fusion (SF)**.
 
 The result is effective multi-scale feature extraction and cross-scale interaction at **full spatial resolution**, which is especially valuable for low-resolution inputs.
