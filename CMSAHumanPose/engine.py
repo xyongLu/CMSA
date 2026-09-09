@@ -7,10 +7,8 @@ import numpy as np
 
 from function import accuracy, get_final_preds
 from utils import AverageMeter, _print_name_value, flip_back
-# from vis import save_debug_images
-# import ipdb
 
-def train_one_epoch(config, model, train_loader, criterion, optimizer, device, epoch, output_dir, tb_log_dir, writer_dict=None):
+def train_one_epoch(config, model, train_loader, criterion, optimizer, device, epoch):
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = AverageMeter()
@@ -61,18 +59,8 @@ def train_one_epoch(config, model, train_loader, criterion, optimizer, device, e
             # logger.info(msg)
             print(msg)
 
-            # writer = writer_dict['writer']
-            # global_steps = writer_dict['train_global_steps']
-            # writer.add_scalar('train_loss', losses.val, global_steps)
-            # writer.add_scalar('train_acc', acc.val, global_steps)
-            # writer_dict['train_global_steps'] = global_steps + 1
-
-            # prefix = '{}_{}'.format(os.path.join(output_dir, 'train'), i)
-            # save_debug_images(config, input, meta, target, pred*4, output,
-            #                   prefix)
-
 @torch.no_grad()
-def evaluate(config, model, val_loader, val_dataset, criterion, device, output_dir,  tb_log_dir, writer_dict=None):
+def evaluate(config, model, val_loader, val_dataset, criterion, device, output_dir):
     batch_time = AverageMeter()
     losses = AverageMeter()
     acc = AverageMeter()
@@ -166,23 +154,7 @@ def evaluate(config, model, val_loader, val_dataset, criterion, device, output_d
             # logger.info(msg)
             print(msg)
 
-            # prefix = '{}_{}'.format(os.path.join(output_dir, 'val'), i)
-            # save_debug_images(config, input, meta, target, pred*4, output,
-            #                   prefix)
-
     name_values, perf_indicator = val_dataset.evaluate(
         config, all_preds, output_dir, all_boxes, image_path, filenames, imgnums)
-
-    # if writer_dict:
-    #     writer = writer_dict['writer']
-    #     global_steps = writer_dict['valid_global_steps']
-    #     writer.add_scalar('valid_loss', losses.avg, global_steps)
-    #     writer.add_scalar('valid_acc', acc.avg, global_steps)
-    #     if isinstance(name_values, list):
-    #         for name_value in name_values:
-    #             writer.add_scalars('valid', dict(name_value), global_steps)
-    #     else:
-    #         writer.add_scalars('valid', dict(name_values), global_steps)
-    #     writer_dict['valid_global_steps'] = global_steps + 1
 
     return perf_indicator
