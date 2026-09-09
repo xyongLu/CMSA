@@ -94,7 +94,7 @@ CMSA/
 ├── config/                   # default configuration (yacs) — config/default.py
 ├── experiments/coco/vits/    # experiment configs: cmsa_s_32.yaml / cmsa_b_32.yaml / cmsa_l_32.yaml
 ├── lib/                      # datasets, heatmap heads, NMS, evaluation utilities
-├── models/                   # CMSAFormer (cmasformer.py) and reference backbones
+├── models/                   # CMSAFormer (cmasformer.py)
 ├── files/                    # figures used in this README
 ├── dist_train.py             # training entry point
 ├── dist_eval.py              # evaluation entry point
