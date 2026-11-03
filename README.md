@@ -212,11 +212,12 @@ Low-resolution inputs are produced by resizing crops to the target size (e.g. 32
 ## Citation
 
 ```bibtex
-@article{lu2024cascaded,
-  title={Cascaded Multi-Scale Attention for Enhanced Multi-Scale Feature Extraction and Interaction with Low-Resolution Images},
+@article{lu2026cascaded,
+  title={Cascaded multi-scale attention for enhanced multi-scale feature extraction and interaction with low-resolution images},
   author={Lu, Xiangyong and Suganuma, Masanori and Okatani, Takayuki},
-  journal={arXiv preprint arXiv:2412.02197},
-  year={2024}
+  journal={IEEE Transactions on Multimedia},
+  year={2026},
+  publisher={IEEE}
 }
 ```
 
