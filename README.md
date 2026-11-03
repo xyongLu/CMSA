@@ -3,7 +3,7 @@
 **[Cascaded Multi-Scale Attention for Enhanced Multi-Scale Feature Extraction and Interaction with Low-Resolution Images](https://arxiv.org/abs/2412.02197)**
 
 > Accepted by **IEEE Transactions on Multimedia (IEEE TMM), 2026**.
-> This repository contains the official PyTorch implementation for **human pose estimation on COCO 2017**. (CMSA also works well in tasks such as head pose estimation, classification, semantic segmentation, and depth estimation.)
+> This repository contains the official PyTorch implementation for **human pose estimation on COCO 2017**. (CMSA also works well in tasks such as head pose estimation, classification, semantic segmentation, and monocular depth estimation.)
 
 ---
 
